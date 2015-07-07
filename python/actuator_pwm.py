@@ -18,7 +18,7 @@ print(client)
 
 """Actuator a is for tilting the panel up and down--the angle towards to sun--to maintain a 45 degree angle. It should be called every second by the reactor timer."""
 def moveA():
-	print(datetime.datetime.now().strftime('%H:%M:%S PST'))
+	print(datetime.datetime.now().strftime('%H:%M:%S PST via moveA'))
 	print("|")
 	print("V")
 	t.myLoc.calcTiltingHeight(t.distAO1, datetime.datetime.now())
