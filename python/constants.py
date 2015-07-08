@@ -11,7 +11,7 @@ class Config:
 		self.file_str = file_str
 		self.distAO1 = config["distInfo"]["distActuatorToOrigin"]
 		self.distAO2 = config["distInfo"]["distPanningActuatorToOrigin"]
-		self.secToWait = config["distInfo"]["moveActuatorPerUnitOfSeconds"]
+		self.printEverySec = config["distInfo"]["moveActuatorPerUnitOfSeconds"]
 		self.maxActuatorHeight = config["distInfo"]["maxActuatorHeight"]
 		self.name = config["demoLocationInfo"]["name"]
 		self.lat = config["demoLocationInfo"]["latitude"]

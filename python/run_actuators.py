@@ -4,7 +4,12 @@ import json
 from constants import constants as x
 
 #instantiate websocketclient
-go = Run("127.0.0.1", "8080", x.maxActuatorHeight)
+##DEMO REAL-TIME
+# now = datetime.datetime.utcnow()
+# go = Run("127.0.0.1", "8080", x.maxActuatorHeight, now)
+
+now = datetime.datetime.utcnow()
+go = Run("127.0.0.1", "8080", x.maxActuatorHeight, SUNSET, sunrise)
 print("client obj:", go.client)
 
 #instantiate server, thereby the factory/listening

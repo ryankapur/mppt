@@ -4,6 +4,10 @@ import datetime, json, copy
 from Pysolar.solar import GetAltitude, GetAzimuth
 from math import tan, cos, radians, sqrt
 
+def localToUTC(time, hours_after_UTC):
+	time += datetime.timedelta(hours = hours_after_UTC)
+	return time			
+
 now = datetime.datetime.now()
 """A location has time-specific altitude, azimuth values (degrees) as per Pysolar. Using origin to actuator distances, the various effective actuator heights can be calculated."""
 class Location:
@@ -15,6 +19,7 @@ class Location:
 		self.time = time
 		self.o_a_dist1 = o_a_dist1
 		self.o_a_dist2 = o_a_dist2
+		self.now = now
 
 	def incrementTime(self, time, x):
 		self.time += datetime.timedelta(minutes = x)
@@ -80,31 +85,15 @@ class Location:
 		x = sqrt(val)
 		print ("Effective actuator2 height: ", '{:.4f}'.format(x), " inches")
 
-	def calcSunriseTime(self, lat, lon, time):
-		a = self.alt(lat, lon, time)
-		while a < 0:
-			a = self.alt(lat, lon, self.time)
-			self.incrementTime(self.time, 1)
-		return self.time
-
-	def calcSunsetTime(self, lat, lon):
-		year = int(datetime.datetime.now().strftime('%y'))
-		month = int(datetime.datetime.now().strftime('%m'))
-		day = int(datetime.datetime.now().strftime('%d'))
-
-		t = datetime.datetime(year, month, day + 1, 11, 43, 00)
-		a = self.alt(lat, lon, t)
-		while a < 0:
-			a = self.alt(lat, lon, t)
-			t += datetime.timedelta(minutes = -1)
-		return t
 
 	"""Print the actuator values at hourly increments starting at input time."""
-	def simulateDemoDay(self, lat, lon, hours_after_UTC, input_time_zone, sunset_time):
+	def simulateDemoDay(self, lat, lon, hours_after_UTC, input_time_zone, start_time, sunset_time):
 			print ("lat,lon: (", lat, ", ", lon, ")")
 			i = 0
+			self.time = start_time
+
 			while True:
-				sunset = datetime.datetime.now()
+				now = datetime.datetime.now()
 				curr_alt = self.alt(lat, lon, self.time)
 				#if self.time < sunset_time:
 				if curr_alt <= 0: #sunsettime:
@@ -148,3 +137,24 @@ def print_azimuth(loc):
 	print (str(loc.name) + " azimuth: ", loc.azimuth(loc.lat, loc.lon, loc.time))
 def print_actuator1(loc):
 	print (str(loc.name) + " actuator height: ", loc.calcTiltHeight1(loc.o_a_dist1))
+
+def calcSunriseTime(lat, lon, time):
+	a = GetAltitude(lat, lon, time)
+	while a < 0:
+		a = GetAltitude(lat, lon, time)
+		#incrementTime(time, 1)
+		time += datetime.timedelta(minutes = -1)
+	return time
+
+def calcSunsetTime(lat, lon, time):
+	year = int(datetime.datetime.now().strftime('%y'))
+	month = int(datetime.datetime.now().strftime('%m'))
+	day = int(datetime.datetime.now().strftime('%d'))
+
+	t = datetime.datetime(year, month, day + 1, 11, 43, 00)
+	a = GetAltitude(lat, lon, time)
+	while a < 0:
+		a = GetAltitude(lat, lon, t)
+		t += datetime.timedelta(minutes = -1)
+	return t
+

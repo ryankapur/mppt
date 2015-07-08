@@ -21,6 +21,11 @@ myLoc = t.Location(x.name, x.lat, x.lon, d, x.distAO1, x.distAO2)
 effectiveActuatorHeight1 = myLoc.calcTiltHeight1(x.distAO1, myLoc.time)
 effectiveActuatorHeight2 = myLoc.calcPanHeight2(x.distAO2, myLoc.time)
 
+#Calculating sunrise/sunset
+myStartTime = datetime.datetime(x.sYear, x.sMonth, x.sDay, 4, 18, 34)
+mySunrise = myLoc.calcSunriseTime(x.lat, x.lon, myStartTime)
+print("MYSUNRISE: ", mySunrise)
+
 def printDemoHeights():
 	t.printLocationInfo(myLoc)
 	myLoc.printTiltHeight1(x.distAO1, myLoc.time)
